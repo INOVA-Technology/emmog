@@ -33,7 +33,7 @@ socket.on('update_players', (data) => {
 	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	for (let key in data) {
 		if (data.hasOwnProperty(key) /* && key != me.userId */) {
-			draw_player(ctx, data[key].pos);
+			draw_player(ctx, data[key]);
 		}
 	}
 });
@@ -79,7 +79,6 @@ document.addEventListener("keyup", (e) => {
 });
 
 window.setInterval(() => {
-	// let speed = 6;
 	let keys = [];
 
 	// move this somewhere else, make it an object with keycodes as values
@@ -94,9 +93,9 @@ window.setInterval(() => {
 	}
 }, 20);
 
-function draw_player(ctx, pos) {
+function draw_player(ctx, player) {
 	ctx.beginPath();
-	ctx.arc(pos.x, pos.y, 25, 0, 2 * Math.PI);
+	ctx.arc(player.pos.x, player.pos.y, player.radius, 0, 2 * Math.PI);
 	ctx.fill();
 }
 </script>	
