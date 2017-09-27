@@ -4,32 +4,6 @@ let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
 let player_list = {};
-/*
-let players = {
-	uid1: {
-		name: "Freddy",
-		pos: {
-			x: 0,
-			y: 0
-		},
-		size: {
-			width: 200,
-			height: 200
-		}
-	},
-	uid2: {
-		name: "Billy Bob",
-		pos: {
-			x: 16,
-			y: 25
-		},
-		size: {
-			width: 200,
-			height: 200
-		}
-	}
-};
-*/
 
 app.use("/public", express.static(__dirname + "/public"));
 
@@ -44,7 +18,8 @@ io.on('connection', (sock) => {
 		pos: {
 			x: 0,
 			y: 0
-		}
+		},
+		speed: 6
 	};
 	player_list[player.playerId] = player;
 	sock.emit('init', player);
@@ -52,8 +27,32 @@ io.on('connection', (sock) => {
 		delete player_list[player.playerId];
 	});
 
-	sock.on('update_player', (data) => {
-		extend_object(player, data, ["pos"]);
+	// sock.on('update_player', (data) => {
+		// extend_object(player, data, ["pos"]);
+	// });
+	
+	sock.on('key_press', (data) => {
+		console.log("hm");
+		console.log(data);
+		for (let i = 0; i < data.length; i++) {
+			switch (data[i]) {
+				case "right":
+					player.pos.x += player.speed;
+					break;
+				case "left":
+					player.pos.x -= player.speed;
+					break;
+				case "up":
+					player.pos.y -= player.speed;
+					break;
+				case "down":
+					player.pos.y += player.speed;
+					break;
+				// default:
+					// TODO: handle invalid keys
+					// break;
+			}
+		}
 	});
 
 	setInterval(() => {

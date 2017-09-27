@@ -39,7 +39,6 @@ socket.on('update_players', (data) => {
 });
 
 document.addEventListener("keydown", (e) => {
-	console.log(e.keyCode);
 	switch (e.keyCode) {
 		case 39:
 			keys_down.right = true;
@@ -80,26 +79,18 @@ document.addEventListener("keyup", (e) => {
 });
 
 window.setInterval(() => {
-	let speed = 6;
-	let change = false;
-	if (keys_down.right) {
-		me.pos.x += speed;
-		change = true;
+	// let speed = 6;
+	let keys = [];
+
+	// move this somewhere else, make it an object with keycodes as values
+	let possible_keys = ["right", "left", "up", "down"];
+	for (let i = 0; i < possible_keys.length; i++) {
+		if (keys_down[possible_keys[i]]) {
+			keys.push(possible_keys[i]);
+		}
 	}
-	if (keys_down.left) {
-		me.pos.x -= speed;
-		change = true;
-	}
-	if (keys_down.up) {
-		me.pos.y -= speed;
-		change = true;
-	}
-	if (keys_down.down) {
-		me.pos.y += speed;
-		change = true;
-	}
-	if (change) {
-		socket.emit('update_player', { pos: me.pos });
+	if (keys.length != 0) {
+		socket.emit('key_press', keys);
 	}
 }, 20);
 
